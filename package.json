@@ -1,0 +1,16 @@
+{
+  "name": "package",
+  "version": "1.0.0",
+  "description": "test",
+  "main": "backend.js",
+  "scripts": {
+    "test": "make test",
+    "start": "node backend.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.4",
+    "http-server": "^0.11.1"
+  }
+}
