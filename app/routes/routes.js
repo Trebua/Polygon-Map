@@ -13,7 +13,7 @@ module.exports = function (app, db) {
         console.log(req);
         let json = JSON.stringify(req.body);
         fs.writeFile('storage.json', json, 'ascii');
-        res.send(req.body);
+        res.send("success");
     })
 
 };
