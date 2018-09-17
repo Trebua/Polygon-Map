@@ -305,12 +305,9 @@ function changeState() {
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "http://localhost:8000/change", false);
     xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-
-    //console.log(JSON.stringify(json));
-    //console.log(JSON.parse(JSON.stringify(json)));
-    console.log("" + JSON.stringify(json));
-    xhttp.send("" + JSON.stringify(json));
+    json = jQuery.param(JSON.stringify(json));
+    xhttp.send(json);
 }
 
-//init();
-loadDefaults(getDefaultPolygons());
+init();
+//loadDefaults(getDefaultPolygons());

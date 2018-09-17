@@ -10,10 +10,17 @@ module.exports = function (app, db) {
     });
 
     app.post('/change', function (req, res) {
-        console.log(req);
-        let json = JSON.stringify(req.body);
+        let json = deserialize(req.body);
         fs.writeFile('storage.json', json, 'ascii');
         res.send("success");
     })
 
 };
+
+function deserialize(json) {
+    let res = "";
+    for (var key in json){
+        res += json[key];
+    }
+    return res;
+}
