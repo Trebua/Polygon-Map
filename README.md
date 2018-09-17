@@ -6,6 +6,7 @@ Javascript, HTML, CSS, leaflet, turf, and jQuery
 
 ### Backend
 API made with Node.js and Express.
+
 .json-files are used for storage.
 
 ### How to run
