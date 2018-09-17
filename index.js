@@ -1,6 +1,3 @@
-
-//Validering i POST
-
 var map = L.map('map').setView([51.5027589576403, -0.14007568359375], 13);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2luZHJlYXViIiwiYSI6ImNqbTBpZ3dwNzBjdzIzbG15djRiNGUwZGkifQ.MAMvApOlgo-J_Srj6p1nxQ', {
@@ -20,6 +17,7 @@ var polygons = [];
 var polyid = "0";
 var selected = [] //max 2
 
+//Lager polygons til kartet fra featurecollection-json
 function loadJSON(json) {
     let features = json.features;
     for (let i = 0; i < features.length; i++) {
@@ -74,6 +72,7 @@ function polyIndex(poly, l) {
 //Utfører union og snitt
 function intersectOrUnion(event) {
     let op = event.target.id;
+
     //Feilmelding
     if (selected.length != 2) {
         errorMsg.innerHTML = "Du må markere 2 polygoner for å utføre " + op;
@@ -164,6 +163,7 @@ function deletePolygon(poly) {
     map.removeLayer(poly);
 }
 
+//Sletter alle polygons
 function clearAll() {
     while (polygons.length > 0) {
         deletePolygon(polygons[0]);
@@ -171,6 +171,7 @@ function clearAll() {
     changeState();
 }
 
+//Genererer featurecollection med polygons på kartet
 function stateToGeoJSON() {
     let geoj =
     {
@@ -201,6 +202,7 @@ function stateToGeoJSON() {
     return geoj;
 }
 
+//Initialiserer kartet med polygons som er lagret i storage
 function init() {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "http://localhost:8000/featurecollection", false);
@@ -208,6 +210,7 @@ function init() {
     loadJSON(JSON.parse(xhttp.responseText));
 }
 
+//Sender en POST-request med en ny og oppdatert featurecollection
 function changeState() {
     let json = stateToGeoJSON();
     var xhttp = new XMLHttpRequest();
@@ -217,6 +220,7 @@ function changeState() {
     xhttp.send(json);
 }
 
+//Laster default-polygonene
 function loadDefaults() {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "http://localhost:8000/default", false);
@@ -226,4 +230,3 @@ function loadDefaults() {
 }
 
 init();
-//loadDefaults(getDefaultPolygons());
