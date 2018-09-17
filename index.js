@@ -1,8 +1,7 @@
-//Gjenstår
-//Opprydding
+
 //Validering i POST
 
-var map = L.map('map').setView([-0.14007568359375, 51.5027589576403], 13);
+var map = L.map('map').setView([51.5027589576403, -0.14007568359375], 13);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2luZHJlYXViIiwiYSI6ImNqbTBpZ3dwNzBjdzIzbG15djRiNGUwZGkifQ.MAMvApOlgo-J_Srj6p1nxQ', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -24,8 +23,12 @@ var selected = [] //max 2
 function loadJSON(json) {
     let features = json.features;
     for (let i = 0; i < features.length; i++) {
-        let coords = features[i].geometry.coordinates[0];
-        let poly = L.polygon([coords], { color: 'red', id: polyid++ }).addTo(map);
+        let coords = features[i].geometry.coordinates;
+        let polycoords = []
+        for (let j = 0; j < coords.length; j++) {
+            polycoords.push(coords[j]);
+        }
+        let poly = L.polygon(polycoords, { color: 'red', id: polyid++ }).addTo(map);
         polygons.push(poly);
     }
     polygons.forEach(function (pol) {
@@ -177,6 +180,24 @@ function stateToGeoJSON() {
     polygons.forEach(function (poly) {
         geoj.features.push(poly.toGeoJSON());
     });
+    
+    //Midlertidig løsning for toGeoJSONs flipping av koordinater
+    let features = geoj.features;
+    for (let i = 0; i < features.length; i++) {
+        let coords = features[i].geometry.coordinates;
+        for (let j = 0; j < coords.length; j++) {
+            let dimcoords = coords[j];
+            for (let k = 0; k < dimcoords.length; k++) {
+                let temp = dimcoords[k][1];
+                dimcoords[k][1] = dimcoords[k][0];
+                dimcoords[k][0] = temp;
+            }
+            let temp = dimcoords[0][1];
+            dimcoords[0][1] = dimcoords[0][0];
+            dimcoords[0][0] = temp;
+            dimcoords[dimcoords-length-1] = dimcoords[0];
+        }
+    }
     return geoj;
 }
 
@@ -189,7 +210,6 @@ function init() {
 
 function changeState() {
     let json = stateToGeoJSON();
-    console.log(json);
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "http://localhost:8000/change", false);
     xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
