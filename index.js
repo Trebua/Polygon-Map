@@ -1,4 +1,8 @@
-var map = L.map('map').setView([51.5027589576403, -0.14007568359375], 13);
+//Gjenstår
+//Opprydding
+//Validering i POST
+
+var map = L.map('map').setView([-0.14007568359375,  51.5027589576403], 13);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2luZHJlYXViIiwiYSI6ImNqbTBpZ3dwNzBjdzIzbG15djRiNGUwZGkifQ.MAMvApOlgo-J_Srj6p1nxQ', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -11,15 +15,13 @@ document.getElementById("union").addEventListener("click", intersectOrUnion);
 document.getElementById("snitt").addEventListener("click", intersectOrUnion);
 document.getElementById("defaults").addEventListener("click", loadDefaults);
 document.getElementById("clear").addEventListener("click", clearAll);
-document.getElementById("currentstate").addEventListener("click", stateToGeoJSON);
 let errorMsg = document.getElementById("error");
 
 var polygons = [];
 var polyid = "0";
 var selected = [] //max 2
 
-function loadDefaults(json) {
-    //json = getDefaultPolygons();
+function loadJSON(json) {
     let features = json.features;
     for (let i = 0; i < features.length; i++) {
         let coords = features[i].geometry.coordinates[0];
@@ -163,6 +165,7 @@ function clearAll() {
     while (polygons.length > 0) {
         deletePolygon(polygons[0]);
     }
+    changeState();
 }
 
 function stateToGeoJSON() {
@@ -177,127 +180,11 @@ function stateToGeoJSON() {
     return geoj;
 }
 
-//Laster inn defaultpolygonene
-//loadDefaults(getDefaultPolygons);
-function getDefaultPolygons() {
-    var geoj = {
-        "type": "FeatureCollection",
-        "features": [
-            {
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [
-                                -0.14007568359375,
-                                51.5027589576403
-                            ],
-                            [
-                                -0.12325286865234374,
-                                51.5027589576403
-                            ],
-                            [
-                                -0.12325286865234374,
-                                51.512588580360244
-                            ],
-                            [
-                                -0.14007568359375,
-                                51.512588580360244
-                            ],
-                            [
-                                -0.14007568359375,
-                                51.5027589576403
-                            ]
-                        ]
-                    ]
-                }
-            },
-            {
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [
-                                -0.1352691650390625,
-                                51.50810140697543
-                            ],
-                            [
-                                -0.11398315429687499,
-                                51.50810140697543
-                            ],
-                            [
-                                -0.11398315429687499,
-                                51.51963895991333
-                            ],
-                            [
-                                -0.1352691650390625,
-                                51.51963895991333
-                            ],
-                            [
-                                -0.1352691650390625,
-                                51.50810140697543
-                            ]
-                        ]
-                    ]
-                }
-            },
-            {
-                "type": "Feature",
-                "properties": {},
-                "geometry": {
-                    "type": "Polygon",
-                    "coordinates": [
-                        [
-                            [
-                                -0.13595581054687497,
-                                51.49698840879303
-                            ],
-                            [
-                                -0.11226654052734375,
-                                51.49698840879303
-                            ],
-                            [
-                                -0.11226654052734375,
-                                51.50510971251776
-                            ],
-                            [
-                                -0.13595581054687497,
-                                51.50510971251776
-                            ],
-                            [
-                                -0.13595581054687497,
-                                51.49698840879303
-                            ]
-                        ]
-                    ]
-                }
-            }
-        ]
-    }
-    //flip lat-long
-    let fs = geoj.features;
-    for (let i = 0; i < fs.length; i++) {
-        let coords = fs[i].geometry.coordinates[0];
-        for (let j = 0; j < coords.length; j++) {
-            let latlng = coords[j];
-            let temp = latlng[1];
-            latlng[1] = latlng[0];
-            latlng[0] = temp;
-        }
-    }
-    return geoj;
-}
-
 function init() {
     var xhttp = new XMLHttpRequest();
     xhttp.open("GET", "http://localhost:8000/featurecollection", false);
     xhttp.send();
-    console.log(JSON.parse(xhttp.responseText));
-    loadDefaults(JSON.parse(xhttp.responseText));
+    loadJSON(JSON.parse(xhttp.responseText));
 }
 
 function changeState() {
@@ -307,6 +194,14 @@ function changeState() {
     xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
     json = jQuery.param(JSON.stringify(json));
     xhttp.send(json);
+}
+
+function loadDefaults() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open("GET", "http://localhost:8000/default", false);
+    xhttp.send();
+    loadJSON(JSON.parse(xhttp.responseText));
+    changeState();
 }
 
 init();

@@ -5,8 +5,12 @@ const port = 8000
 var cors = require('cors')
 
 app.use(cors());
-app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({
+    parameterLimit: 100000,
+    limit: '50mb',
+    extended: true
+  }));
 
 require('./app/routes')(app);
 app.listen(port, () => {
