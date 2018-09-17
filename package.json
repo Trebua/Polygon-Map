@@ -5,13 +5,12 @@
   "main": "backend.js",
   "scripts": {
     "test": "make test",
-    "start": "node backend.js"
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "cors": "^2.8.4",
-    "express": "^4.16.3",
-    "http-server": "^0.11.1"
+    "express": "^4.16.3"
   }
 }
