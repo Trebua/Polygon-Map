@@ -2,7 +2,7 @@
 //Opprydding
 //Validering i POST
 
-var map = L.map('map').setView([-0.14007568359375,  51.5027589576403], 13);
+var map = L.map('map').setView([-0.14007568359375, 51.5027589576403], 13);
 
 L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1Ijoic2luZHJlYXViIiwiYSI6ImNqbTBpZ3dwNzBjdzIzbG15djRiNGUwZGkifQ.MAMvApOlgo-J_Srj6p1nxQ', {
     attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
@@ -189,6 +189,7 @@ function init() {
 
 function changeState() {
     let json = stateToGeoJSON();
+    console.log(json);
     var xhttp = new XMLHttpRequest();
     xhttp.open("POST", "http://localhost:8000/change", false);
     xhttp.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
