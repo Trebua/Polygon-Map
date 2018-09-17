@@ -12,5 +12,5 @@ API made with Node.js and Express.
 ### How to run
 * Run "npm install" to install dependencies
 * Run "node server.js" to start server
-* Open website locally
+* Open website locally in **chrome**
 
